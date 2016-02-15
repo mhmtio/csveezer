@@ -1,6 +1,7 @@
 package io.terrafino.csveezer
 
 import io.terrafino.csveezer.Util._
+import scala.collection.mutable.ArrayBuffer
 
 class Mapping(val line: String) {
   val cols = line.split(",")
@@ -46,10 +47,9 @@ class Entry(val mappings: Vector[Mapping], val line: String) {
   override def toString(): String = s"$origDate,$amount,$ptype,$descr"
 
   def getDate() = date
-  def printLine(balance: Double) = {
+  def getLine(balance: Double, buffer: ArrayBuffer[String]) = {
     val newBalance = balance+amount
-    val s = "%s,%.2f,%.2f,%s,%s".format(origDate,amount,newBalance,ptype,descr)
-    println(s)
+    buffer.append("%s,%.2f,%.2f,%s,%s\n".format(origDate,amount,newBalance,ptype,descr))
     newBalance
   }
     
@@ -64,7 +64,9 @@ object CSVeezer extends App {
   val entries = rows.map(new Entry(mappings, _)).sortBy(_.getDate())
   var b: Double = args(2).toDouble
   var l: String = ""
+  var lines:ArrayBuffer[String] = new ArrayBuffer()
   entries.foreach {
-    e => { b = e.printLine(b) }
+    e => {b = e.getLine(b, lines)}
   }
+  saveToFile(args(3), lines)
 }
