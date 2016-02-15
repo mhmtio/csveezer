@@ -26,7 +26,7 @@ object Util {
 
   def saveToFile(f: String, lines: ArrayBuffer[String]): Unit = {
     val file = new File(f)
-    val bw = new BufferedWriter(new FileWriter(file))
+    val bw = new BufferedWriter(new FileWriter(file, false))
     lines.foreach(bw.write(_))
     bw.close 
   }
