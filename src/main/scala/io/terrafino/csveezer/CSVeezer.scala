@@ -30,7 +30,18 @@ class Entry(val mappings: Vector[Mapping], val line: String) {
     (comment, comment)
   }
 
-  var (ptype, descr) = getInfo()
+  def getInfo2(m: Vector[Mapping]): (String, String) = {
+    if (m.size == 0) (comment, comment)
+    else {
+      val first = m(0)
+      first.regex.findFirstIn(comment) match {
+        case Some(_) => (first.ptype, first.descr)
+        case None    => getInfo2(m.tail)
+      }
+    }
+  }
+
+  var (ptype, descr) = getInfo2(mappings)
 
   override def toString(): String = s"$origDate,$amount,$ptype,$descr"
 
