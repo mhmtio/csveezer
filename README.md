@@ -1,1 +1,1 @@
-# Transforms bank statements to the format my accountant likes.
+# (Scala) Transforms bank statements to the format my accountant likes.
